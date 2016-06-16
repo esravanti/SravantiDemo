@@ -1,5 +1,5 @@
 cscflow:
-  image: engci-docker.cisco.com:5932/csc-flowstudio
+  image: engci-docker.cisco.com:5932/flowstudio
   labels:
     io.rancher.scheduler.affinity:host_label: fname=host01
     io.rancher.container.start_once: 'true'
@@ -7,7 +7,7 @@ cscflow:
    - 1880/tcp
   volume_driver: convoy-gluster
   volumes:
-   - flowstudio:/opt/cisco/flowstudio/.data
+   - my_vol:/flowstudio
   environment:
     SEND_TO: ${SEND_TO}
     MESSAGE: ${SEND_MESSAGE}
