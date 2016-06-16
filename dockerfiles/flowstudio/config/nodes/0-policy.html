@@ -1,0 +1,112 @@
+<!--
+/**
+ * Copyright 2015 Cisco Systems Inc..
+ *
+ **/
+-->
+<!--
+  Copyright 2013, 2015 IBM Corp.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<script type="text/x-red" data-template-name="policy">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="policy.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]policy.label.name">
+    </div>
+    <div class="form-row" style="margin-bottom: 0px;">
+        <label for="node-input-policy"><i class="fa fa-file-code-o"></i> <span data-i18n="policy.label.policy"></span></label>
+        <input type="hidden" id="node-input-policy" autofocus="autofocus">
+        <select id="node-input-format" style=" font-size: 0.8em; margin-bottom: 3px; width:110px; float:right;">
+            <option value="YAML">YAML</option>
+            <option value="text">TEXT</option>
+            <option value="json">JSON</option>
+        </select>
+    </div>
+    <div class="form-row node-text-editor-row">
+        <div style="height: 250px;" class="node-text-editor" id="node-input-policy-editor" ></div>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="policy">
+    <p>Creates a shared set of policy variables</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('policy',{
+        color:"rgb(243, 181, 103)",
+        category: 'catalog',
+        defaults: {
+            name: {value:"<policy>"},
+            policy: {value:""}
+        },
+        inputs:0,
+        outputs:1,
+        icon: "policy.png",
+        label: function() {
+            return this.name;
+        },
+        oneditprepare: function() {
+            var that = this;
+            function policyDialogResize() {
+                var rows = $("#dialog-form>div:not(.node-text-editor-row)");
+                var height = $("#dialog-form").height();
+                for (var i=0;i<rows.size();i++) {
+                    height -= $(rows[i]).outerHeight(true);
+                }
+                var editorRow = $("#dialog-form>div.node-text-editor-row");
+                height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+                $(".node-text-editor").css("height",height+"px");
+                that.editor.resize();
+            };
+            $( "#dialog" ).on("dialogresize", policyDialogResize);
+            $( "#dialog" ).one("dialogopen", function(ev) {
+                var size = $( "#dialog" ).dialog('option','sizeCache-template');
+                if (size) {
+                    $("#dialog").dialog('option','width',size.width);
+                    $("#dialog").dialog('option','height',size.height);
+                    policyDialogResize();
+                }
+            });
+            $( "#dialog" ).one("dialogclose", function(ev,ui) {
+                var height = $( "#dialog" ).dialog('option','height');
+                $( "#dialog" ).off("dialogresize",policyDialogResize);
+            });
+            this.editor = RED.editor.createEditor({
+                id: 'node-input-policy-editor',
+                mode: 'ace/mode/text',
+                value: $("#node-input-policy").val()
+            });
+            RED.library.create({
+                url:"policys", // where to get the data from
+                type:"policy", // the type of object the library is for
+                editor:this.editor, // the field name the main text body goes to
+                fields:['name','policy']
+            });
+            this.editor.focus();
+
+            $("#node-input-format").change(function() {
+                var mod = "ace/mode/"+$("#node-input-format").val();
+                that.editor.getSession().setMode({
+                   path: mod,
+                   v: Date.now()
+                })
+            });
+        },
+        oneditsave: function() {
+            $("#node-input-policy").val(this.editor.getValue())
+            delete this.editor;
+        }
+    });
+</script>

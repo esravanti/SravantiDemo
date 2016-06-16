@@ -1,0 +1,898 @@
+<!--
+/**
+ * Copyright 2015 Cisco Systems Inc..
+ *
+ **/
+-->
+<!--
+  Copyright 2013,2015 IBM Corp.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<script type="text/x-red" data-template-name="service">
+  <div class="form-row">
+    <ul style="background: #fff; min-width: 600px; margin-bottom: 20px;" id="node-service-tabs"></ul>
+  </div>
+  <div id="node-service-tabs-content" style="min-height: 170px;">
+    <div id="service-tab-container" style="display:none">
+      <div class="form-row">
+        <label for="node-input-name">
+          <span data-i18n="service.label.name"></span>
+        </label>
+        <input class="input-append-left" type="text" id="node-input-name">
+      </div>
+      <div class="form-row">
+        <label for="node-input-image">
+          <span data-i18n="service.label.image"></span>
+        </label>
+        <input type="text" id="node-input-image">
+      </div>
+      <div class="form-row">
+        <input type="checkbox" id="node-input-alwayspull" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-alwayspull" style="width: 70%;" data-i18n="service.label.always-pull"></label>
+      </div>
+      <div class="form-row">
+        <label>
+          <span data-i18n="service.label.portmap"></span>
+        </label>
+      </div>
+      <div class="form-row node-input-portmap-container-row" style="margin-bottom: 0px;">
+        <div id="node-input-portmap-container-div" style="box-sizing: border-box; border-radius: 5px; height: 200px; padding: 5px; border: 1px solid #ccc; overflow-y:scroll;">
+          <ol id="node-input-portmap-container" style=" list-style-type:none; margin: 0;"></ol>
+        </div>
+      </div>
+      <div class="form-row">
+        <a href="#" class="editor-button editor-button-small" id="node-input-add-portmap" style="margin-top: 4px;"><i class="fa fa-plus"></i> <span data-i18n="service.label.add-port"></span></a>
+      </div>
+    </div>
+    <div id="service-tab-volumes" style="display:none">
+      <div class="form-row">
+        <label for="node-input-volumedriver">
+          <span data-i18n="service.label.volumedriver"></span>
+        </label>
+        <input class="input-append-left" type="text" id="node-input-volumedriver">
+      </div>
+      <div class="form-row">
+        <label>
+          <span data-i18n="service.label.volumes"></span>
+        </label>
+      </div>
+      <div class="form-row node-input-volumes-container-row" style="margin-bottom: 0px;">
+        <div id="node-input-volumes-container-div" style="box-sizing: border-box; border-radius: 5px; height: 100px; padding: 5px; border: 1px solid #ccc; overflow-y:scroll;">
+          <ol id="node-input-volumes-container" style=" list-style-type:none; margin: 0;"></ol>
+        </div>
+      </div>
+      <div class="form-row">
+        <a href="#" class="editor-button editor-button-small" id="node-input-add-volume" style="margin-top: 4px;"><i class="fa fa-plus"></i> <span data-i18n="service.label.add-volume"></span></a>
+      </div>
+      <div class="form-row">
+        <label>
+          <span data-i18n="service.label.volumesfrom"></span>
+        </label>
+      </div>
+      <div class="form-row node-input-volumesfrom-container-row" style="margin-bottom: 0px;">
+        <div id="node-input-volumesfrom-container-div" style="box-sizing: border-box; border-radius: 5px; height: 100px; padding: 5px; border: 1px solid #ccc; overflow-y:scroll;">
+          <ol id="node-input-volumesfrom-container" style=" list-style-type:none; margin: 0;"></ol>
+        </div>
+      </div>
+      <div class="form-row">
+        <a href="#" class="editor-button editor-button-small" id="node-input-add-volumefrom" style="margin-top: 4px;"><i class="fa fa-plus"></i> <span data-i18n="service.label.add-volume"></span></a>
+      </div>
+    </div>
+    <div id="service-tab-command" style="display:none">
+      <div class="form-row">
+        <label for="node-input-cmd">
+          <span data-i18n="service.label.cmd"></span>
+        </label>
+        <input type="text" id="node-input-cmd" data-i18n="[placeholder]service.placeholder.cmd">
+      </div>
+      <div class="form-row">
+        <label for="node-input-entrypoint">
+          <span data-i18n="service.label.entrypoint"></span>
+        </label>
+        <input class="input-append-left" type="text" id="node-input-entrypoint" data-i18n="[placeholder]service.placeholder.entrypoint" style="width: 40%;">
+        <label for="node-input-user" style="margin-left: 10px; width: 35px; ">
+          <span data-i18n="service.label.user"></span>
+        </label>
+        <input type="text" id="node-input-user" style="width:45px">
+      </div>
+      <div class="form-row">
+        <input type="hidden" id="node-input-console" autofocus="autofocus">
+        <label for="node-input-console">
+          <span data-i18n="service.label.console"></span>
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="node-input-group-console" value="-it" style="width: 20%; " checked="checked" />
+          <span data-i18n="service.label.console-it"></span>
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="node-input-group-console" value="-t" style="width: 20%; " />
+          <span data-i18n="service.label.console-t"></span>
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="node-input-group-console" value="-i" style="width: 20%; " />
+          <span data-i18n="service.label.console-i"></span>
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="node-input-group-console" value="none" style="width: 20%; " />
+          <span data-i18n="service.label.console-none"></span>
+        </label>
+      </div>
+      <div class="form-row">
+        <input type="hidden" id="node-input-autorestart" autofocus="autofocus">
+        <label for="node-input-autorestart">
+          <span data-i18n="service.label.autorestart"></span>
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="node-input-group-autorestart" value="never" style="width: 20%; " checked="checked" />
+          <span data-i18n="service.label.autorestart-never"></span>
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="node-input-group-autorestart" value="always" style="width: 20%; " />
+          <span data-i18n="service.label.autorestart-always"></span>
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="node-input-group-autorestart" value="forever" style="width: 20%; " />
+          <span data-i18n="service.label.autorestart-forever"></span>
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="node-input-group-autorestart" value="limited" style="width: 20%; " />
+          <span data-i18n="service.label.autorestart-limited"></span>
+        </label>
+      </div>
+      <div class="form-row">
+        <label style="width: 45%; ">
+          <span data-i18n="service.label.environment"></span>
+        </label>
+        <label style="width: 40%; ">
+          <span data-i18n="service.label.value"></span>
+        </label>
+      </div>
+      <div class="form-row node-input-envvars-container-row" style="margin-bottom: 0px;">
+        <div id="node-input-envvars-container-div" style="box-sizing: border-box; border-radius: 5px; height: 200px; padding: 5px; border: 1px solid #ccc; overflow-y:scroll;">
+          <ol id="node-input-envvars-container" style=" list-style-type:none; margin: 0;"></ol>
+        </div>
+      </div>
+      <div class="form-row">
+        <a href="#" class="editor-button editor-button-small" id="node-input-add-envvar" style="margin-top: 4px;"><i class="fa fa-plus"></i> <span data-i18n="service.label.add-envvar"></span></a>
+      </div>
+    </div>
+    <div id="service-tab-network" style="display:none">
+      <div class="form-row">
+        <label for="node-input-ip">
+          <span data-i18n="service.label.ip"></span>
+        </label>
+        <input class="input-append-left" type="text" id="node-input-ip" data-i18n="[placeholder]service.placeholder.ip" style="width: 30%;" aria-describedby="node-input-ip-help">
+        <label for="node-input-network" style="margin-left: 20%; width: 35px; ">
+          <span data-i18n="service.label.network"></span>
+        </label>
+        <select id="node-input-network" style=" font-size: 0.8em; margin-bottom: 3px; width:110px; float:right;">
+          <option value="managed" data-i18n="service.label.network-managed"></option>
+          <option value="bridge" data-i18n="service.label.network-bridge"></option>
+          <option value="container" data-i18n="service.label.network-container"></option>
+          <option value="host" data-i18n="service.label.network-host"></option>
+          <option value="none" data-i18n="service.label.network-none"></option>
+        </select>
+        <span id="node-input-ip-help" class="help-block" data-i18n="service.help.network-ip"></span>
+      </div>
+      <div class="form-row">
+        <label for="node-input-hostname">
+          <span data-i18n="service.label.hostname"></span>
+        </label>
+        <input class="input-append-left" type="text" id="node-input-hostname" data-i18n="[placeholder]service.placeholder.hostname">
+      </div>
+      <div class="form-row">
+        <label for="node-input-domain">
+          <span data-i18n="service.label.domain"></span>
+        </label>
+        <input class="input-append-left" type="text" id="node-input-domain" data-i18n="[placeholder]service.placeholder.domain">
+      </div>
+    </div>
+    <div id="service-tab-host" style="display:none">
+      <div class="form-row">
+        <label for="node-input-privileged" data-i18n="service.label.privileged"></label>
+        <input type="checkbox" id="node-input-privileged" style="display: inline-block; width: auto; vertical-align: top;">
+        <label style="width: 28%; " data-i18n="service.help.host-privileged"></label>
+        <label for="node-input-pidmode" data-i18n="service.label.pidmode"></label>
+        <input type="checkbox" id="node-input-pidmode" style="display: inline-block; width: auto; vertical-align: top;">
+        <label style="width: 28%; " data-i18n="service.help.host-pidmode"></label>
+      </div>
+      <div class="form-row">
+        <label for="node-input-memlimit">
+          <span data-i18n="service.label.memlimit"></span>
+        </label>
+        <input class="input-append-left" style="width: 26%; " type="text" id="node-input-memlimit" data-i18n="[placeholder]service.placeholder.memlimit" style="width: 40%;">
+        <label for="node-input-swaplimit" style="margin-left: 10px; ">
+          <span data-i18n="service.label.swaplimit"></span>
+        </label>
+        <input class="input-append-left" style="width: 26%; " type="text" id="node-input-swaplimit" data-i18n="[placeholder]service.placeholder.swaplimit" style="width:45px">
+      </div>
+      <div class="form-row">
+        <label for="node-input-cpupin">
+          <span data-i18n="service.label.cpupin"></span>
+        </label>
+        <input class="input-append-left" style="width: 26%; " type="text" id="node-input-cpupin" data-i18n="[placeholder]service.placeholder.cpupin" style="width: 40%;">
+        <label for="node-input-shares" style="margin-left: 10px; ">
+          <span data-i18n="service.label.shares"></span>
+        </label>
+        <input class="input-append-left" style="width: 26%; " type="text" id="node-input-shares" data-i18n="[placeholder]service.placeholder.shares" style="width:45px">
+      </div>
+      <div class="form-row">
+        <label for="node-input-capabilities" data-i18n="service.label.capabilities"></label>
+        <label for="node-input-capadd" style="width: 28%; " data-i18n="service.label.capadd"></label>
+        <label for="node-input-capdrop" style="margin-left: 10px; " data-i18n="service.label.capdrop"></label>
+      </div>
+      <div class="form-row">
+        <label for="node-input-capabilities"></label>
+        <select multiple id="node-input-cpuadd" style=" font-size: 0.8em; margin-bottom: 3px; width: 28%; ">
+          <option value="audit_control" data-i18n="service.label.host-audit_control"></option>
+          <option value="audit_write" data-i18n="service.label.host-audit_write"></option>
+          <option value="block_write" data-i18n="service.label.host-block_write"></option>
+          <option value="chown" data-i18n="service.label.host-chown"></option>
+          <option value="dac_override" data-i18n="service.label.host-dac_override"></option>
+        </select>
+        <select multiple id="node-input-cpudrop" style="margin-left: 10px; font-size: 0.8em; margin-bottom: 3px; width: 28%; ">
+          <option value="audit_control" data-i18n="service.label.host-audit_control"></option>
+          <option value="audit_write" data-i18n="service.label.host-audit_write"></option>
+          <option value="block_write" data-i18n="service.label.host-block_write"></option>
+          <option value="chown" data-i18n="service.label.host-chown"></option>
+          <option value="dac_override" data-i18n="service.label.host-dac_override"></option>
+        </select>
+        <span id="node-input-capabilities-help" class="help-block" data-i18n="service.help.host-capabilities"></span>
+      </div>
+      <div class="form-row">
+        <label>
+          <span data-i18n="service.label.devices"></span>
+        </label>
+      </div>
+      <div class="form-row node-input-devices-container-row" style="margin-bottom: 0px;">
+        <div id="node-input-devices-container-div" style="box-sizing: border-box; border-radius: 5px; height: 100px; padding: 5px; border: 1px solid #ccc; overflow-y:scroll;">
+          <ol id="node-input-devices-container" style=" list-style-type:none; margin: 0;"></ol>
+        </div>
+      </div>
+      <div class="form-row">
+        <a href="#" class="editor-button editor-button-small" id="node-input-add-device" style="margin-top: 4px;"><i class="fa fa-plus"></i> <span data-i18n="service.label.add-device"></span></a>
+      </div>
+    </div>
+    <div id="service-tab-labels" style="display:none">
+      <div class="form-row">
+        <label style="width: 45%; ">
+          <span data-i18n="service.label.key"></span>
+        </label>
+        <label style="width: 40%; ">
+          <span data-i18n="service.label.value"></span>
+        </label>
+      </div>
+      <div class="form-row node-input-labels-container-row" style="margin-bottom: 0px;">
+        <div id="node-input-labels-container-div" style="box-sizing: border-box; border-radius: 5px; height: 300px; padding: 5px; border: 1px solid #ccc; overflow-y:scroll;">
+          <ol id="node-input-labels-container" style=" list-style-type:none; margin: 0;"></ol>
+        </div>
+      </div>
+      <div class="form-row">
+        <a href="#" class="editor-button editor-button-small" id="node-input-add-label" style="margin-top: 4px;"><i class="fa fa-plus"></i> <span data-i18n="service.label.add-label"></span></a>
+      </div>
+    </div>
+  </div>
+</script>
+
+<script type="text/javascript">
+  RED.nodes.registerType('service', {
+    category: 'catalog',
+    color: '#a6adcf',
+    icon: "service.png",
+    inputs: 1,
+    outputs: 1,
+    defaults: {
+      name: {
+        value: "",
+        required: true
+      },
+      image: {
+        value: "",
+        required: true
+      },
+      alwayspull: {
+        value: false
+      },
+      cmd: {
+        value: ""
+      },
+      entrypoint: {
+        value: ""
+      },
+      console: {
+        value: "-it"
+      },
+      autorestart: {
+        value: "never"
+      },
+      network: {
+        value: "managed",
+        required: true
+      },
+      ip: {
+        value: ""
+      },
+      hostname: {
+        value: ""
+      },
+      domain: {
+        value: ""
+      },
+      privileged: {
+        value: false
+      },
+      pidmode: {
+        value: false
+      },
+      memlimit: {
+        value: "",
+        validate: RED.validators.regex(/^(?![\s\S])|([0-9]+[mg]b)/)
+      },
+      swaplimit: {
+        value: "",
+        validate: RED.validators.regex(/^(?![\s\S])|([0-9]+[mg]b)/)
+      },
+      cpupin: {
+        value: ""
+      },
+      shares: {
+        value: "",
+        validate: RED.validators.regex(/^(?![\s\S])|([0-9]+)/)
+      },
+      capadd: {
+        value: "none"
+      },
+      capdrop: {
+        value: "none"
+      },
+      ports: {
+        value: [{
+          public: "",
+          private: "",
+          protocol: "TCP"
+        }]
+      },
+      labels: {
+        value: [{
+          key: "",
+          text: ""
+        }]
+      },
+      envvars: {
+        value: [{
+          key: "",
+          text: ""
+        }]
+      },
+      devices: {
+        value: [{
+          device: ""
+        }]
+      },
+      volumes: {
+        value: [{
+          volume: ""
+        }]
+      },
+      volumesfrom: {
+        value: [{
+          volume: ""
+        }]
+      },
+      volumedriver: {
+        value: ""
+      }
+    },
+    label: function() {
+      return this.name || "<service>";
+    },
+    oneditprepare: function() {
+      var tabs = RED.tabs.create({
+        id: "node-service-tabs",
+        onchange: function(tab) {
+          $("#node-service-tabs-content").children().hide();
+          $("#" + tab.id).show();
+        }
+      });
+      tabs.addTab({
+        id: "service-tab-container",
+        label: this._("service.tabs-label.container")
+      });
+      tabs.addTab({
+        id: "service-tab-command",
+        label: this._("service.tabs-label.command")
+      });
+      tabs.addTab({
+        id: "service-tab-volumes",
+        label: this._("service.tabs-label.volumes")
+      });
+      tabs.addTab({
+        id: "service-tab-network",
+        label: this._("service.tabs-label.network")
+      });
+      tabs.addTab({
+        id: "service-tab-host",
+        label: this._("service.tabs-label.host")
+      });
+      tabs.addTab({
+        id: "service-tab-labels",
+        label: this._("service.tabs-label.labels")
+      });
+      setTimeout(function() {
+        tabs.resize()
+      }, 0);
+      if (typeof this.alwayspull === 'undefined') {
+        this.alwayspull = false;
+        $("#node-input-alwayspull").prop("checked", false);
+      }
+      var that = this;
+
+      var phvolume = this._("service.placeholder.volume")
+      var phvolumefrom = this._("service.placeholder.volumefrom")
+      var phdevice = this._("service.placeholder.device")
+      var phfoo = this._("service.placeholder.foo")
+      var phbar = this._("service.placeholder.bar")
+
+      function generatePortmap(pmap) {
+        var container = $('<li/>', {
+          style: "background: #fff; margin:0; padding:8px 0px; border-bottom: 1px solid #ccc;"
+        });
+
+        var row1 = $('<div/>').appendTo(container);
+
+        $('<label/>').text("Public").appendTo(row1);
+        var publicPort = $('<input/>', {
+          style: "width: 9%;",
+          class: "node-input-portmap-port-public",
+          type: "number"
+        }).appendTo(row1);
+        $('<label/>', {
+          style: "margin-left: 10px;"
+        }).text("Private").appendTo(row1);
+        var privatePort = $('<input/>', {
+          style: "width: 9%;",
+          class: "node-input-portmap-port-private",
+          type: "number"
+        }).appendTo(row1);
+
+        $('<label/>', {
+          style: "margin-left: 10px;"
+        }).text("Protocol").appendTo(row1);
+        var selectField = $('<select/>', {
+          class: "node-input-portmap-protocol",
+          style: "width: 100px; margin-left: 10px; "
+        }).appendTo(row1);
+        var selectOptions = [{
+          v: "TCP",
+          l: "TCP"
+        }, {
+          v: "UDP",
+          l: "UDP"
+        }];
+        for (var i = 0; i < 2; i++) {
+          selectField.append($("<option></option>").val(selectOptions[i].v).text(selectOptions[i].l));
+        }
+
+        var finalspan = $('<span/>', {
+          style: "float: right; margin-right: 10px;"
+        }).appendTo(row1);
+        var deleteButton = $('<a/>', {
+          href: "#",
+          class: "editor-button editor-button-small",
+          style: "margin-top: 7px; margin-left: 5px;"
+        }).appendTo(finalspan);
+        $('<i/>', {
+          class: "fa fa-remove"
+        }).appendTo(deleteButton);
+
+        deleteButton.click(function() {
+          container.css({
+            "background": "#fee"
+          });
+          container.fadeOut(300, function() {
+            $(this).remove();
+          });
+        });
+
+        selectField.find("option").filter(function() {
+          return $(this).val() == pmap.protocol;
+        }).attr('selected', true);
+        publicPort.val(pmap.public);
+        privatePort.val(pmap.private);
+
+        $("#node-input-portmap-container").append(container);
+
+      };
+
+      $("#node-input-add-portmap").click(function() {
+        generatePortmap({
+          public: "",
+          private: "",
+          protocol: "TCP"
+        });
+      });
+
+      if (!this.ports)
+        this.ports = {
+          public: "",
+          private: "",
+          protocol: "TCP"
+        };
+      for (var i = 0; i < this.ports.length; i++) {
+        generatePortmap(this.ports[i]);
+      }
+
+      function generateVolume(vol) {
+        var container = $('<li/>', {
+          style: "background: #fff; margin:0; padding:8px 0px; border-bottom: 1px solid #ccc;"
+        });
+
+        var row1 = $('<div/>').appendTo(container);
+
+        var volume = $('<input/>', {
+          class: "node-input-volumes-volume input-append-left",
+          type: "text",
+          placeholder: phvolume
+        }).appendTo(row1);
+        var finalspan = $('<span/>', {
+          style: "float: right; margin-right: 10px;"
+        }).appendTo(row1);
+        var deleteButton = $('<a/>', {
+          href: "#",
+          class: "editor-button editor-button-small",
+          style: "margin-top: 7px; margin-left: 5px;"
+        }).appendTo(finalspan);
+        $('<i/>', {
+          class: "fa fa-remove"
+        }).appendTo(deleteButton);
+
+        volume.val(vol.volume);
+        deleteButton.click(function() {
+          container.css({
+            "background": "#fee"
+          });
+          container.fadeOut(300, function() {
+            $(this).remove();
+          });
+        });
+        $("#node-input-volumes-container").append(container);
+
+      };
+
+      $("#node-input-add-volume").click(function() {
+        generateVolume({
+          volume: ""
+        });
+      });
+
+      if (!this.volumes)
+        this.volumes = {
+          volume: ""
+        };
+      for (var i = 0; i < this.volumes.length; i++) {
+        generateVolume(this.volumes[i]);
+      }
+
+      function generateVolumeFrom(vol) {
+        var container = $('<li/>', {
+          style: "background: #fff; margin:0; padding:8px 0px; border-bottom: 1px solid #ccc;"
+        });
+
+        var row1 = $('<div/>').appendTo(container);
+
+        var volume = $('<input/>', {
+          class: "node-input-volumesfrom-volume input-append-left",
+          type: "text",
+          placeholder: phvolumefrom
+        }).appendTo(row1);
+        var finalspan = $('<span/>', {
+          style: "float: right; margin-right: 10px;"
+        }).appendTo(row1);
+        var deleteButton = $('<a/>', {
+          href: "#",
+          class: "editor-button editor-button-small",
+          style: "margin-top: 7px; margin-left: 5px;"
+        }).appendTo(finalspan);
+        $('<i/>', {
+          class: "fa fa-remove"
+        }).appendTo(deleteButton);
+
+        volume.val(vol.volume);
+        deleteButton.click(function() {
+          container.css({
+            "background": "#fee"
+          });
+          container.fadeOut(300, function() {
+            $(this).remove();
+          });
+        });
+        $("#node-input-volumesfrom-container").append(container);
+
+      };
+
+      $("#node-input-add-volumefrom").click(function() {
+        generateVolumeFrom({
+          volume: ""
+        });
+      });
+
+      if (!this.volumesfrom)
+        this.volumesfrom = {
+          volume: ""
+        };
+      for (var i = 0; i < this.volumesfrom.length; i++) {
+        generateVolumeFrom(this.volumesfrom[i]);
+      }
+
+
+      function generateDevice(dev) {
+        var container = $('<li/>', {
+          style: "background: #fff; margin:0; padding:8px 0px; border-bottom: 1px solid #ccc;"
+        });
+
+        var row1 = $('<div/>').appendTo(container);
+
+        var device = $('<input/>', {
+          class: "node-input-devices-device input-append-left",
+          type: "text",
+          placeholder: phdevice
+        }).appendTo(row1);
+        var finalspan = $('<span/>', {
+          style: "float: right; margin-right: 10px;"
+        }).appendTo(row1);
+        var deleteButton = $('<a/>', {
+          href: "#",
+          class: "editor-button editor-button-small",
+          style: "margin-top: 7px; margin-left: 5px;"
+        }).appendTo(finalspan);
+        $('<i/>', {
+          class: "fa fa-remove"
+        }).appendTo(deleteButton);
+
+        device.val(dev.device);
+        deleteButton.click(function() {
+          container.css({
+            "background": "#fee"
+          });
+          container.fadeOut(300, function() {
+            $(this).remove();
+          });
+        });
+        $("#node-input-devices-container").append(container);
+
+      };
+
+      $("#node-input-add-device").click(function() {
+        generateDevice({
+          device: ""
+        });
+      });
+
+      if (!this.devices)
+        this.devices = {
+          device: ""
+        };
+      for (var i = 0; i < this.devices.length; i++) {
+        generateDevice(this.devices[i]);
+      }
+
+      function generateLabel(labs) {
+        var container = $('<li/>', {
+          style: "background: #fff; margin:0; padding:8px 0px; border-bottom: 1px solid #ccc;"
+        });
+
+        var row1 = $('<div/>').appendTo(container);
+
+        var key = $('<input/>', {
+          style: "width: 40%;",
+          class: "node-input-labels-label-key input-append-left",
+          placeholder: phfoo,
+          type: "text"
+        }).appendTo(row1);
+        $('<label/>', {
+          style: "width: 5%; text-align: center;"
+        }).text("=").appendTo(row1);
+        var text = $('<input/>', {
+          style: "width: 40%;",
+          class: "node-input-labels-label-text input-append-left",
+          placeholder: phbar,
+          type: "text"
+        }).appendTo(row1);
+
+        var finalspan = $('<span/>', {
+          style: "float: right; margin-right: 10px;"
+        }).appendTo(row1);
+        var deleteButton = $('<a/>', {
+          href: "#",
+          class: "editor-button editor-button-small",
+          style: "margin-top: 7px; margin-left: 5px;"
+        }).appendTo(finalspan);
+        $('<i/>', {
+          class: "fa fa-remove"
+        }).appendTo(deleteButton);
+
+        deleteButton.click(function() {
+          container.css({
+            "background": "#fee"
+          });
+          container.fadeOut(300, function() {
+            $(this).remove();
+          });
+        });
+
+        key.val(labs.key);
+        text.val(labs.text);
+
+        $("#node-input-labels-container").append(container);
+
+      };
+
+      $("#node-input-add-label").click(function() {
+        generateLabel({
+          key: "",
+          text: ""
+        });
+      });
+
+      if (!this.labels)
+        this.labels = {
+          key: "",
+          text: ""
+        };
+      for (var i = 0; i < this.labels.length; i++) {
+        generateLabel(this.labels[i]);
+      }
+
+      function generateEnvvar(envv) {
+        var container = $('<li/>', {
+          style: "background: #fff; margin:0; padding:8px 0px; border-bottom: 1px solid #ccc;"
+        });
+
+        var row1 = $('<div/>').appendTo(container);
+
+        var key = $('<input/>', {
+          style: "width: 40%;",
+          class: "node-input-envvars-var-key input-append-left",
+          placeholder: phfoo,
+          type: "text"
+        }).appendTo(row1);
+        $('<label/>', {
+          style: "width: 5%; text-align: center;"
+        }).text("=").appendTo(row1);
+        var text = $('<input/>', {
+          style: "width: 40%;",
+          class: "node-input-envvars-var-text input-append-left",
+          placeholder: phbar,
+          type: "text"
+        }).appendTo(row1);
+
+        var finalspan = $('<span/>', {
+          style: "float: right; margin-right: 10px;"
+        }).appendTo(row1);
+        var deleteButton = $('<a/>', {
+          href: "#",
+          class: "editor-button editor-button-small",
+          style: "margin-top: 7px; margin-left: 5px;"
+        }).appendTo(finalspan);
+        $('<i/>', {
+          class: "fa fa-remove"
+        }).appendTo(deleteButton);
+
+        deleteButton.click(function() {
+          container.css({
+            "background": "#fee"
+          });
+          container.fadeOut(300, function() {
+            $(this).remove();
+          });
+        });
+
+        key.val(envv.key);
+        text.val(envv.text);
+
+        $("#node-input-envvars-container").append(container);
+
+      };
+
+      $("#node-input-add-envvar").click(function() {
+        generateEnvvar({
+          key: "",
+          text: ""
+        });
+      });
+
+      if (!this.envvars)
+        this.envvars = {
+          key: "",
+          text: ""
+        };
+      for (var i = 0; i < this.envvars.length; i++) {
+        generateEnvvar(this.envvars[i]);
+      }
+    },
+    oneditsave: function() {
+      $("#node-input-console").val($(':radio[name=node-input-group-console]:checked').val());
+      $("#node-input-autorestart").val($(':radio[name=node-input-group-autorestart]:checked').val());
+
+      var node = this;
+      var portmap = $("#node-input-portmap-container").children();
+      node.portmap = [];
+      portmap.each(function(i) {
+        var port = $(this);
+        var p1 = port.find(".node-input-portmap-port-public").val();
+        var p2 = port.find(".node-input-portmap-port-private").val();
+        var p3 = port.find(".node-input-portmap-protocol option:selected").val();
+        node.portmap.push({
+          public: p1,
+          private: p2,
+          protocol: p3
+        });
+      });
+
+      var volumes = $("#node-input-volumes-container").children();
+      node.volumes = [];
+      volumes.each(function(i) {
+        var p1 = $(this).find(".node-input-volumes-volume").val();
+        node.volumes.push({
+          volume: p1
+        });
+      });
+
+      var volumes = $("#node-input-volumesfrom-container").children();
+      node.volumesfrom = [];
+      volumes.each(function(i) {
+        var p1 = $(this).find(".node-input-volumesfrom-volume").val();
+        node.volumesfrom.push({
+          volume: p1
+        });
+      });
+
+      var devices = $("#node-input-devices-container").children();
+      node.devices = [];
+      devices.each(function(i) {
+        var p1 = $(this).find(".node-input-devices-device").val();
+        node.devices.push({
+          device: p1
+        });
+      });
+
+      var labels = $("#node-input-labels-container").children();
+      node.labels = [];
+      labels.each(function(i) {
+        var lab = $(this);
+        var p1 = lab.find(".node-input-labels-label-key").val();
+        var p2 = lab.find(".node-input-labels-label-text").val();
+        node.labels.push({
+          key: p1,
+          text: p2
+        });
+      });
+
+      var envvars = $("#node-input-envvars-container").children();
+      node.envvars = [];
+      envvars.each(function(i) {
+        var envv = $(this);
+        var p1 = envv.find(".node-input-envvars-envv-key").val();
+        var p2 = envv.find(".node-input-envvars-envv-text").val();
+        node.envvars.push({
+          key: p1,
+          text: p2
+        });
+      });
+    }
+
+  });
+</script>
+
+<script type="text/x-red" data-help-name="service">
+  <p>Service node.</p>
+</script>

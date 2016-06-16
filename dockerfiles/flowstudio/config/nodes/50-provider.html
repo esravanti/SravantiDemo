@@ -1,0 +1,98 @@
+<!--
+/**
+ * Copyright 2015 Cisco Systems Inc..
+ *
+ **/
+-->
+<!--
+  Copyright 2013,2015 IBM Corp.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<script type="text/x-red" data-template-name="provider">
+    <div class="form-row">
+        <ul style="background: #fff; min-width: 600px; margin-bottom: 20px;" id="node-provider-tabs"></ul>
+    </div>
+    <div id="node-provider-tabs-content" style="min-height: 170px;">
+        <div id="provider-tab-connection" style="display:none">
+            <div class="form-row node-input-provider">
+                <label for="node-input-provider"><i class="fa fa-globe"></i> <span data-i18n="provider.label.provider"></span></label>
+                <input class="input-append-left" type="text" id="node-input-broker" placeholder="localhost" style="width: 40%;" >
+                <label for="node-input-port" style="margin-left: 10px; width: 35px; "> <span data-i18n="provider.label.port"></span></label>
+                <input type="text" id="node-input-port" data-i18n="[placeholder]spectre.label.port" style="width:45px">
+            </div>
+        </div>
+        <div id="provider-tab-security" style="display:none">
+            <div class="form-row">
+                <label for="node-input-user"><i class="fa fa-user"></i> <span data-i18n="provider.label.username"></span></label>
+                <input type="text" id="node-input-user">
+            </div>
+            <div class="form-row">
+                <label for="node-input-password"><i class="fa fa-lock"></i> <span data-i18n="provider.label.password"></span></label>
+                <input type="password" id="node-input-password">
+            </div>
+            <div class="form-row">
+                <input type="checkbox" id="node-input-usetls" style="display: inline-block; width: auto; vertical-align: top;">
+                <label for="node-input-usetls" style="width: 70%;" data-i18n="provider.label.use-tls"></label>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('provider',{
+        category: 'catalog',
+        color: '#a6abcf',
+        icon: "provider.png",
+        inputs:1,
+        outputs:0,
+        defaults: {
+            provider: {value:"",required:true},
+            port: {value:8080,required:true,validate:RED.validators.number()},
+            usetls: {value: false}
+        },
+        credentials: {
+            user: {type:"text"},
+            password: {type: "password"}
+        },
+        label: function() {
+            if (this.provider == "") { this.provider = "localhost"; }
+            return this.provider+":"+this.port;
+        },
+        oneditprepare: function () {
+            var tabs = RED.tabs.create({
+                id: "node-provider-tabs",
+                onchange: function(tab) {
+                    $("#node-provider-tabs-content").children().hide();
+                    $("#" + tab.id).show();
+                }
+            });
+            tabs.addTab({
+                id: "provider-tab-connection",
+                label: this._("provider.tabs-label.connection")
+            });
+            tabs.addTab({
+                id: "provider-tab-security",
+                label: this._("provider.tabs-label.security")
+            });
+            setTimeout(function() { tabs.resize()},0);
+            if (typeof this.usetls  === 'undefined'){
+                this.usetls = false;
+                $("#node-input-usetls").prop("checked",false);
+            }
+            var node = this;
+        }
+    });
+</script>
+
+<script type="text/x-red" data-help-name="provider">
+    <p>Connects to a provider and executes the <b>stack</b>.</p>
+</script>

@@ -1,0 +1,15 @@
+{
+  "provider": {
+      "tabs-label": {
+        "connection": "connection",
+        "security": "security"
+      },
+      "label": {
+        "username": "User Name",
+        "password": "Password",
+        "use-tls": "Enable secure (SSL/TLS) connection",
+        "provider": "Provider",
+          "port": "Port"
+              }
+        }
+  }

@@ -1,0 +1,39 @@
+<script type="text/javascript">
+  RED.nodes.registerType('stop', {
+    category: 'catalog',
+    color: '#a6bbcf',
+    defaults: {
+      name: {
+        value: ""
+      },
+      exitCode: {
+        value: "0"
+      }
+    },
+    inputs: 1,
+    outputs: 0,
+    icon: "stop.png",
+    label: function() {
+      return this.name || "<stop>";
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="stop">
+<div class="form-row">
+  <label for="node-input-name">
+    <span data-i18n="stop.label.name"></span>
+  </label>
+  <input type="text" id="node-input-name" data-i18n="[placeholder]stop.label.name">
+</div>
+<div class="form-row">
+  <label for="node-input-exitCode">
+    <span data-i18n="stop.label.exitCode"></span>
+  </label>
+  <input type="text" id="node-input-exitCode" data-i18n="[placeholder]stop.label.exitCode">
+</div>
+</script>
+
+<script type="text/x-red" data-help-name="stop">
+  <p>Stop the flow and exit. If the msg object has an exitCode property then this will be returned.</p>
+</script>
