@@ -1,0 +1,8 @@
+name: Send A Email Message
+description: |
+  Send a message to an email address
+version: v0.0.5
+category: Demo Services
+maintainer: Cisco
+license: # The license
+projectURL: # A URL related to the catalog entry

@@ -1,0 +1,8 @@
+name: Grant Demo Service
+description: |
+  Grant's Demo Service
+version: v0.0.1
+category: Grant's Services
+maintainer: Cisco
+license: # The license
+projectURL: # A URL related to the catalog entry

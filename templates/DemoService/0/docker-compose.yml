@@ -1,0 +1,14 @@
+  cscflow:
+  image: engci-docker.cisco.com:5932/csc-flowstudio
+  labels:
+    io.rancher.scheduler.affinity:host_label: fname=host01
+    io.rancher.container.start_once: 'true'
+  expose:
+   - 1880/tcp
+  volume_driver: convoy
+  volumes:
+   - grantsvc_flowstudio:/opt/cisco/flowstudio/.data
+  environment:
+    TOPIC: ${TOPIC}
+    MESSAGE: ${MESSAGE}
+    FLOW: "GRANTSVC"

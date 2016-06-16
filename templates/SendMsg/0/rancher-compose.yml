@@ -1,0 +1,18 @@
+.catalog:
+  name: "Send A Email Message"
+  version: "v0.0.5"
+  description: "Send a message to an email address"
+  uuid: "sendemail-0.0.1-0"
+  questions:
+    - variable: "SEND_TO"
+      label: "Send To"
+      description: "Send to email address"
+      type: "string"
+      default: "gemenysm@cisco.com"
+      required: true
+    - variable: "SEND_MESSAGE"
+      label: "Message"
+      description: "Message to send"
+      type: "string"
+      default: "Hello there email"
+      required: true

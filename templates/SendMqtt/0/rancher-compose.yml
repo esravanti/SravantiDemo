@@ -1,0 +1,18 @@
+.catalog:
+  name: "Send A MQTT Message"
+  version: "v0.0.5"
+  description: "Send a message to an MQTT broker"
+  uuid: "sendmqtt-0.0.1-0"
+  questions:
+    - variable: "TOPIC"
+      label: "Topic"
+      description: "Optional topic"
+      type: "string"
+      default: "csc-out"
+      required: true
+    - variable: "MESSAGE"
+      label: "Message"
+      description: "Message to send"
+      type: "string"
+      default: "Hello there MQTT"
+      required: true
