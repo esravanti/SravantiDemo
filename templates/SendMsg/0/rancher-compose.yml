@@ -8,7 +8,7 @@
       label: "Send To"
       description: "Send to email address"
       type: "string"
-      default: "gemenysm@cisco.com"
+      default: "sedurpal@cisco.com"
       required: true
     - variable: "SEND_MESSAGE"
       label: "Message"

@@ -5,7 +5,7 @@ cscflow:
     io.rancher.container.start_once: 'true'
   expose:
    - 1880/tcp
-  volume_driver: convoy
+  volume_driver: convoy-gluster
   volumes:
    - flowstudio:/opt/cisco/flowstudio/.data
   environment:
