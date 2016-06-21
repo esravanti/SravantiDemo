@@ -5,10 +5,10 @@
     io.rancher.container.start_once: 'true'
   expose:
    - 1880/tcp
-  volume_driver: convoy
+  volume_driver: convoy-gluster
   volumes:
-   - grantsvc_flowstudio:/opt/cisco/flowstudio/.data
+   - my_vol:/flowstudio
   environment:
     TOPIC: ${TOPIC}
     MESSAGE: ${MESSAGE}
-    FLOW: "GRANTSVC"
+    FLOW: "SravantiSVC"
