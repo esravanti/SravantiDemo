@@ -7,7 +7,7 @@ cscflow:
    - 1880/tcp
   volume_driver: convoy-gluster
   volumes:
-   - flowstudio:/opt/cisco/flowstudio/.data
+   - my_vol:/flowstudio
   environment:
     TOPIC: ${TOPIC}
     MESSAGE: ${MESSAGE}
